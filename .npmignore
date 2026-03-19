@@ -1,0 +1,23 @@
+# Source files (only ship compiled)
+src/
+tests/
+examples/
+docs/
+
+# Config files
+tsconfig.json
+tsup.config.ts
+.eslintrc.json
+vitest.config.ts
+
+# Development
+.git
+.github
+node_modules/
+*.log
+.env*
+*.tmp
+
+# Build artifacts
+*.tgz
+.DS_Store

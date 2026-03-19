@@ -335,7 +335,6 @@ This SDK interfaces with the BitFlow Lend smart contracts deployed on Stacks:
 
 ## Links
 
-- [Documentation](https://github.com/Yusufolosun/bitflow-lend-sdk/tree/main/docs)
 - [Examples](https://github.com/Yusufolosun/bitflow-lend-sdk/tree/main/examples)
 - [BitFlow Lend Protocol](https://github.com/Yusufolosun/bitflow-lend)
 - [Stacks Blockchain](https://www.stacks.co/)
@@ -350,4 +349,4 @@ Contributions welcome! Please open an issue or PR.
 
 ---
 
-**Built with ❤️ for the Stacks ecosystem**
+**Built for the Stacks ecosystem**

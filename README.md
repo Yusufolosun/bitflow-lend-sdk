@@ -1,0 +1,353 @@
+# BitFlow Lend SDK
+
+[![npm version](https://badge.fury.io/js/bitflow-lend-sdk.svg)](https://www.npmjs.com/package/bitflow-lend-sdk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+
+Professional TypeScript SDK for [BitFlow Lend](https://github.com/Yusufolosun/bitflow-lend) - Bitcoin-native fixed-rate lending protocol on Stacks blockchain.
+
+## Features
+
+- ✅ **Type-safe** - Full TypeScript support with comprehensive type definitions
+- ✅ **Network agnostic** - Works seamlessly on mainnet and testnet
+- ✅ **Zero dependencies** - Only peer dependencies on Stacks packages
+- ✅ **Production ready** - Built on battle-tested mainnet contracts
+- ✅ **Developer friendly** - Simple API, excellent documentation
+- ✅ **Tree-shakeable** - ESM and CommonJS support
+
+## Installation
+
+```bash
+npm install bitflow-lend-sdk @stacks/transactions @stacks/network
+```
+
+```bash
+yarn add bitflow-lend-sdk @stacks/transactions @stacks/network
+```
+
+```bash
+pnpm add bitflow-lend-sdk @stacks/transactions @stacks/network
+```
+
+## Quick Start
+
+```typescript
+import { VaultClient, toMicroStx, formatStx } from 'bitflow-lend-sdk';
+
+// Initialize client
+const client = new VaultClient({ network: 'mainnet' });
+
+// Query user data (read-only, no gas)
+const deposit = await client.getUserDeposit('SP2...');
+console.log(`Deposit: ${formatStx(deposit)} STX`);
+
+const loan = await client.getUserLoan('SP2...');
+if (loan) {
+  console.log(`Loan: ${formatStx(loan.amount)} STX`);
+  console.log(`Interest Rate: ${loan.interestRate / 100n}%`);
+}
+
+// Check protocol stats
+const stats = await client.getProtocolStats();
+console.log(`Total Deposits: ${formatStx(stats.totalDeposits)} STX`);
+console.log(`Active Loans: ${stats.activeLoans}`);
+
+// Deposit collateral (requires private key)
+const txId = await client.deposit(
+  toMicroStx(1000), // 1000 STX
+  'your-private-key-hex'
+);
+console.log(`Transaction: ${txId}`);
+```
+
+## API Overview
+
+### VaultClient
+
+Main interface for the BitFlow lending protocol.
+
+#### Read Operations (No Gas)
+
+```typescript
+// User data
+await client.getUserDeposit(address: string): Promise<bigint>
+await client.getUserLoan(address: string): Promise<UserLoan | null>
+await client.getRepaymentAmount(address: string): Promise<RepaymentAmount>
+await client.calculateHealthFactor(address: string): Promise<HealthFactor>
+await client.isLiquidatable(address: string): Promise<boolean>
+
+// Protocol data
+await client.getProtocolStats(): Promise<ProtocolStats>
+await client.getProtocolMetrics(): Promise<ProtocolMetrics>
+await client.getVolumeMetrics(): Promise<VolumeMetrics>
+await client.getTotalDeposits(): Promise<bigint>
+await client.getTotalRepaid(): Promise<bigint>
+await client.getTotalLiquidations(): Promise<bigint>
+
+// Utilities
+await client.calculateRequiredCollateral(amount: bigint): Promise<bigint>
+await client.getContractVersion(): Promise<string>
+```
+
+#### Write Operations (Requires Transaction)
+
+```typescript
+// Deposit STX as collateral
+await client.deposit(
+  amount: bigint,
+  senderKey: string,
+  options?: TransactionOptions
+): Promise<string>
+
+// Withdraw collateral
+await client.withdraw(
+  amount: bigint,
+  senderKey: string,
+  options?: TransactionOptions
+): Promise<string>
+
+// Borrow STX
+await client.borrow(
+  amount: bigint,
+  interestRate: bigint,
+  term: bigint,
+  senderKey: string,
+  options?: TransactionOptions
+): Promise<string>
+
+// Repay loan
+await client.repay(
+  senderKey: string,
+  options?: TransactionOptions
+): Promise<string>
+
+// Liquidate position
+await client.liquidate(
+  borrowerAddress: string,
+  senderKey: string,
+  options?: TransactionOptions
+): Promise<string>
+```
+
+## Usage Examples
+
+### Check User Position
+
+```typescript
+import { VaultClient, formatStx, formatHealthFactor } from 'bitflow-lend-sdk';
+
+const client = new VaultClient({ network: 'mainnet' });
+const userAddress = 'SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193';
+
+// Get deposit
+const deposit = await client.getUserDeposit(userAddress);
+console.log(`Collateral: ${formatStx(deposit)} STX`);
+
+// Get loan
+const loan = await client.getUserLoan(userAddress);
+if (loan) {
+  console.log(`Borrowed: ${formatStx(loan.amount)} STX`);
+  console.log(`Rate: ${loan.interestRate / 100n}%`);
+  console.log(`Term ends at block: ${loan.termEnd}`);
+  
+  // Check health
+  const health = await client.calculateHealthFactor(userAddress);
+  console.log(`Health Factor: ${formatHealthFactor(health.factor)}`);
+  console.log(`Status: ${health.isHealthy ? '✅ Healthy' : '⚠️ At Risk'}`);
+}
+```
+
+### Deposit and Borrow
+
+```typescript
+import { VaultClient, toMicroStx } from 'bitflow-lend-sdk';
+
+const client = new VaultClient({ network: 'testnet' });
+const privateKey = process.env.PRIVATE_KEY!;
+
+// Deposit 1500 STX as collateral
+const depositTx = await client.deposit(
+  toMicroStx(1500),
+  privateKey
+);
+console.log(`Deposit tx: ${depositTx}`);
+
+// Wait for confirmation (~10 minutes)
+// ...
+
+// Borrow 1000 STX at 5% APR for 1 year
+const borrowTx = await client.borrow(
+  toMicroStx(1000),      // amount
+  500n,                   // 5% interest rate (basis points)
+  52560n,                 // 1 year in blocks
+  privateKey
+);
+console.log(`Borrow tx: ${borrowTx}`);
+```
+
+### Monitor Protocol
+
+```typescript
+import { VaultClient, formatStx } from 'bitflow-lend-sdk';
+
+const client = new VaultClient({ network: 'mainnet' });
+
+// Get comprehensive stats
+const stats = await client.getProtocolStats();
+console.log('📊 Protocol Statistics');
+console.log(`Total Deposits: ${formatStx(stats.totalDeposits)} STX`);
+console.log(`Total Borrowed: ${formatStx(stats.totalBorrowed)} STX`);
+console.log(`Total Repaid: ${formatStx(stats.totalRepaid)} STX`);
+console.log(`Active Loans: ${stats.activeLoans}`);
+console.log(`Liquidations: ${stats.totalLiquidations}`);
+
+// Get metrics
+const metrics = await client.getProtocolMetrics();
+console.log(`\n📈 Protocol Metrics`);
+console.log(`Utilization: ${metrics.utilizationRate / 100n}%`);
+console.log(`Avg Interest: ${metrics.averageInterestRate / 100n}%`);
+```
+
+### Calculate Loan Requirements
+
+```typescript
+import { 
+  calculateRequiredCollateral,
+  calculateMaxBorrow,
+  calculateInterest,
+  toMicroStx,
+  formatStx
+} from 'bitflow-lend-sdk';
+
+// How much collateral for 1000 STX loan?
+const collateral = calculateRequiredCollateral(toMicroStx(1000));
+console.log(`Required: ${formatStx(collateral)} STX`); // 1500 STX (150%)
+
+// How much can I borrow with 2000 STX?
+const maxLoan = calculateMaxBorrow(toMicroStx(2000));
+console.log(`Max loan: ${formatStx(maxLoan)} STX`); // ~1333 STX
+
+// What's the interest on 1000 STX at 5% for 6 months?
+const interest = calculateInterest(
+  toMicroStx(1000),  // principal
+  500n,              // 5% rate
+  26280n             // 6 months in blocks
+);
+console.log(`Interest: ${formatStx(interest)} STX`); // ~25 STX
+```
+
+## TypeScript Support
+
+Full type definitions included:
+
+```typescript
+import type {
+  UserLoan,
+  ProtocolStats,
+  HealthFactor,
+  RepaymentAmount,
+  NetworkType,
+  SDKConfig,
+} from 'bitflow-lend-sdk';
+
+// All return types are properly typed
+const loan: UserLoan = await client.getUserLoan(address);
+const stats: ProtocolStats = await client.getProtocolStats();
+```
+
+## Network Support
+
+### Mainnet
+
+```typescript
+const client = new VaultClient({ network: 'mainnet' });
+// Contract: SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-vault-core
+```
+
+### Testnet
+
+```typescript
+const client = new VaultClient({ network: 'testnet' });
+// Contract: ST1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK1GA0CF0.bitflow-vault-core
+```
+
+## Constants
+
+Access protocol constants:
+
+```typescript
+import { PROTOCOL_CONSTANTS } from 'bitflow-lend-sdk';
+
+console.log(PROTOCOL_CONSTANTS.COLLATERAL_RATIO);      // 15000n (150%)
+console.log(PROTOCOL_CONSTANTS.LIQUIDATION_THRESHOLD); // 11000n (110%)
+console.log(PROTOCOL_CONSTANTS.MIN_BORROW_AMOUNT);     // 100 STX
+console.log(PROTOCOL_CONSTANTS.BLOCKS_PER_YEAR);       // 52560
+```
+
+## Utility Functions
+
+```typescript
+import {
+  formatStx,
+  toMicroStx,
+  formatInterestRate,
+  formatHealthFactor,
+  isValidStxAddress,
+  blocksToTime,
+  formatBlocksToTime,
+} from 'bitflow-lend-sdk';
+
+// Formatting
+formatStx(1500000000n);          // "1,500.00"
+toMicroStx(1500);                // 1500000000n
+formatInterestRate(500n);        // "5.00%"
+formatHealthFactor(15000n);      // "150.00%"
+
+// Validation
+isValidStxAddress('SP2...');     // true
+
+// Time calculations
+blocksToTime(7200n);             // { days: 50, hours: 0, minutes: 0 }
+formatBlocksToTime(144n);        // "1d 0h"
+```
+
+## Error Handling
+
+```typescript
+try {
+  const txId = await client.deposit(amount, privateKey);
+  console.log(`Success: ${txId}`);
+} catch (error) {
+  if (error instanceof Error) {
+    console.error(`Failed: ${error.message}`);
+  }
+}
+```
+
+## Smart Contract
+
+This SDK interfaces with the BitFlow Lend smart contracts deployed on Stacks:
+
+- **Mainnet**: `SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-vault-core`
+- **Testnet**: `ST1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK1GA0CF0.bitflow-vault-core`
+
+[View on Explorer](https://explorer.hiro.so/txid/SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-vault-core?chain=mainnet)
+
+## Links
+
+- [Documentation](https://github.com/Yusufolosun/bitflow-lend-sdk/tree/main/docs)
+- [Examples](https://github.com/Yusufolosun/bitflow-lend-sdk/tree/main/examples)
+- [BitFlow Lend Protocol](https://github.com/Yusufolosun/bitflow-lend)
+- [Stacks Blockchain](https://www.stacks.co/)
+
+## License
+
+MIT © BitFlow Lend
+
+## Contributing
+
+Contributions welcome! Please open an issue or PR.
+
+---
+
+**Built with ❤️ for the Stacks ecosystem**

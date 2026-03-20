@@ -28,6 +28,8 @@
   },
   "keywords": [
     "stacks",
+    "cryptocurrency",
+    "crypto",
     "bitcoin",
     "lending",
     "defi",
@@ -48,6 +50,10 @@
     "url": "https://github.com/Yusufolosun/bitflow-lend-sdk/issues"
   },
   "homepage": "https://github.com/Yusufolosun/bitflow-lend-sdk#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/Yusufolosun"
+  },
   "peerDependencies": {
     "@stacks/network": "^7.3.0",
     "@stacks/transactions": "^7.3.0"

@@ -1,4 +1,4 @@
-// Main exports
+//  Main exports
 export { VaultClient } from './client/VaultClient';
 
 // Types
@@ -16,6 +16,7 @@ export type {
   StakingPosition,
   PriceData,
   ContractCallResult,
+  TransactionStatus,
 } from './types';
 
 // Constants
@@ -44,3 +45,20 @@ export {
   calculateMaxBorrow,
   calculateInterest,
 } from './utils';
+
+// Errors
+export {
+  BitflowSDKError,
+  InvalidAddressError,
+  InvalidAmountError,
+  InvalidParameterError,
+  InsufficientCollateralError,
+  TransactionFailedError,
+  NetworkError,
+  UnauthorizedError,
+  LoanActiveError,
+  NoLoanError,
+  NotLiquidatableError,
+  ProtocolPausedError,
+  InsufficientBalanceError,
+} from './errors';

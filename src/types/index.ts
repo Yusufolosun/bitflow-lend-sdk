@@ -81,7 +81,7 @@ export interface RepaymentAmount {
 export interface TransactionOptions {
   fee?: bigint;
   nonce?: bigint;
-  postConditions?: any[];
+  postConditions?: import('@stacks/transactions').PostCondition[];
 }
 
 /**
@@ -111,3 +111,13 @@ export interface ContractCallResult<T> {
   value?: T;
   error?: string;
 }
+
+// Re-export Clarity types
+export type {
+  ClarityUserLoanResponse,
+  ClarityProtocolStatsResponse,
+  ClarityProtocolMetricsResponse,
+  ClarityVolumeMetricsResponse,
+  ClarityRepaymentAmountResponse,
+  TransactionStatus,
+} from './clarity';

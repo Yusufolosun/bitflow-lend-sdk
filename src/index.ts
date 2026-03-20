@@ -44,6 +44,18 @@ export {
   calculateRequiredCollateral,
   calculateMaxBorrow,
   calculateInterest,
+  // Validation utilities
+  validateAmount,
+  validateDeposit,
+  validateWithdrawal,
+  validateBorrow,
+  validateAddress,
+  validatePrivateKey,
+  validateTransactionOptions,
+  // Error parsing utilities
+  parseContractError,
+  isContractError,
+  getErrorMessage,
 } from './utils';
 
 // Errors

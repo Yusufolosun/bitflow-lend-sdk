@@ -265,14 +265,14 @@ const stats: ProtocolStats = await client.getProtocolStats();
 
 ```typescript
 const client = new VaultClient({ network: 'mainnet' });
-// Contract: SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-vault-core
+// Contract: SP1N3809W9CBWWX04KN3TCQHP8A9GN520BD4JMP8Z.bitflow-vault-core-v2
 ```
 
 ### Testnet
 
 ```typescript
 const client = new VaultClient({ network: 'testnet' });
-// Contract: ST1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK1GA0CF0.bitflow-vault-core
+// Contract: ST1N3809W9CBWWX04KN3TCQHP8A9GN520BDRPWBVD.bitflow-vault-core-v2
 ```
 
 ## Constants
@@ -444,10 +444,10 @@ mnemonic.txt
 
 This SDK interfaces with the BitFlow Lend smart contracts deployed on Stacks:
 
-- **Mainnet**: `SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-vault-core`
-- **Testnet**: `ST1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK1GA0CF0.bitflow-vault-core`
+- **Mainnet**: `SP1N3809W9CBWWX04KN3TCQHP8A9GN520BD4JMP8Z.bitflow-vault-core-v2`
+- **Testnet**: `ST1N3809W9CBWWX04KN3TCQHP8A9GN520BDRPWBVD.bitflow-vault-core-v2`
 
-[View on Explorer](https://explorer.hiro.so/txid/SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-vault-core?chain=mainnet)
+[View on Explorer](https://explorer.hiro.so/txid/SP1N3809W9CBWWX04KN3TCQHP8A9GN520BD4JMP8Z.bitflow-vault-core-v2?chain=mainnet)
 
 ## Links
 

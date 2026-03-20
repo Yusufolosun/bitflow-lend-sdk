@@ -2,19 +2,19 @@ import type { NetworkType } from '../types';
 
 /**
  * Contract addresses for different networks
+ *
+ * IMPORTANT: These are the actual deployed BitFlow Lend contracts
  */
 export const CONTRACT_ADDRESSES = {
   mainnet: {
-    vaultCore: 'SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-vault-core',
-    vaultCoreV2: 'SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-vault-core-v2',
-    stakingPool: 'SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-staking-pool',
-    oracleRegistry: 'SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193.bitflow-oracle-registry',
+    vaultCore: 'SP1N3809W9CBWWX04KN3TCQHP8A9GN520BD4JMP8Z.bitflow-vault-core-v2',
+    // Legacy v1 (deprecated)
+    vaultCoreV1: 'SP1N3809W9CBWWX04KN3TCQHP8A9GN520BD4JMP8Z.bitflow-vault-core',
   },
   testnet: {
-    vaultCore: 'ST1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK1GA0CF0.bitflow-vault-core',
-    vaultCoreV2: 'ST1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK1GA0CF0.bitflow-vault-core-v2',
-    stakingPool: 'ST1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK1GA0CF0.bitflow-staking-pool',
-    oracleRegistry: 'ST1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK1GA0CF0.bitflow-oracle-registry',
+    vaultCore: 'ST1N3809W9CBWWX04KN3TCQHP8A9GN520BDRPWBVD.bitflow-vault-core-v2',
+    // Legacy v1 (deprecated)
+    vaultCoreV1: 'ST1N3809W9CBWWX04KN3TCQHP8A9GN520BDRPWBVD.bitflow-vault-core',
   },
 } as const;
 

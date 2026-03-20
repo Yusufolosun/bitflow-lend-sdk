@@ -1,4 +1,4 @@
-# BitFlow Lend SDK
+# @yusufolosun/bitflow-lend-sdk
 
 [![npm version](https://badge.fury.io/js/bitflow-lend-sdk.svg)](https://www.npmjs.com/package/bitflow-lend-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

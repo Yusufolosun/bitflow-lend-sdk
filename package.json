@@ -1,6 +1,6 @@
 {
   "name": "@yusufolosun/bitflow-lend-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Professional TypeScript SDK for BitFlow Lend - Bitcoin-native lending on Stacks blockchain",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

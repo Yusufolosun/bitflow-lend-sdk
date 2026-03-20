@@ -87,6 +87,10 @@ await client.getTotalLiquidations(): Promise<bigint>
 // Utilities
 await client.calculateRequiredCollateral(amount: bigint): Promise<bigint>
 await client.getContractVersion(): Promise<string>
+
+// Transaction helpers
+await client.getTransactionStatus(txId: string): Promise<TransactionStatus>
+await client.waitForTransaction(txId: string, options?): Promise<TransactionStatus>
 ```
 
 #### Write Operations (Requires Transaction)
@@ -313,16 +317,128 @@ formatBlocksToTime(144n);        // "1d 0h"
 
 ## Error Handling
 
+The SDK provides comprehensive error types for better error handling:
+
 ```typescript
+import {
+  VaultClient,
+  // Error types
+  InvalidAddressError,
+  InvalidAmountError,
+  InvalidParameterError,
+  InsufficientCollateralError,
+  TransactionFailedError,
+  NetworkError,
+  LoanActiveError,
+  NoLoanError,
+  BitflowSDKError,
+} from 'bitflow-lend-sdk';
+
 try {
   const txId = await client.deposit(amount, privateKey);
-  console.log(`Success: ${txId}`);
+
+  // Wait for confirmation
+  const status = await client.waitForTransaction(txId);
+  if (status.status === 'success') {
+    console.log('Deposit confirmed!');
+  }
 } catch (error) {
-  if (error instanceof Error) {
-    console.error(`Failed: ${error.message}`);
+  if (error instanceof InvalidAmountError) {
+    console.error('Invalid amount:', error.message);
+    if (error.minimumRequired) {
+      console.error('Minimum required:', error.minimumRequired);
+    }
+  } else if (error instanceof InvalidParameterError) {
+    console.error('Invalid parameter:', error.message);
+  } else if (error instanceof InsufficientCollateralError) {
+    console.error('Need more collateral:', error.required, 'vs', error.actual);
+  } else if (error instanceof TransactionFailedError) {
+    console.error('Transaction failed:', error.message);
+    console.error('Error code:', error.contractErrorCode);
+  } else if (error instanceof NetworkError) {
+    console.error('Network issue:', error.message);
+  } else if (error instanceof BitflowSDKError) {
+    console.error('SDK error:', error.message);
   }
 }
 ```
+
+## Security
+
+**CRITICAL: Follow these security practices when using this SDK.**
+
+### Private Key Handling
+
+```typescript
+// NEVER do this - hardcoded keys
+const privateKey = 'abc123...'; // DANGEROUS!
+
+// NEVER commit .env files
+// Add to .gitignore: .env, *.env.*, .env.local
+
+// DO: Use environment variables
+const privateKey = process.env.PRIVATE_KEY;
+if (!privateKey) {
+  throw new Error('PRIVATE_KEY environment variable required');
+}
+
+// DO: Validate key format before use
+if (!/^[0-9a-fA-F]{64}$/.test(privateKey)) {
+  throw new Error('Invalid private key format');
+}
+```
+
+### Post-Conditions
+
+The SDK uses `PostConditionMode.Allow` for flexibility. For maximum security, provide explicit post-conditions:
+
+```typescript
+import { makeStandardSTXPostCondition, FungibleConditionCode } from '@stacks/transactions';
+
+const postConditions = [
+  makeStandardSTXPostCondition(
+    senderAddress,
+    FungibleConditionCode.LessEqual,
+    depositAmount
+  ),
+];
+
+await client.deposit(amount, privateKey, { postConditions });
+```
+
+### Input Validation
+
+The SDK validates all inputs before transactions:
+
+- Amounts must be positive and above protocol minimums
+- Interest rates must be between 0-100%
+- Loan terms must be between 1 day and 10 years
+- Addresses must be valid Stacks format
+- Private keys must be 64 hex characters
+
+### Files to Never Commit
+
+Ensure your `.gitignore` includes:
+
+```
+.env
+*.env.*
+.env.local
+wallet.json
+**/secrets/
+*.key
+*.pem
+mnemonic.txt
+```
+
+### Best Practices
+
+1. **Use testnet first** - Always test on testnet before mainnet
+2. **Wait for confirmations** - Use `waitForTransaction()` before acting on txs
+3. **Handle all errors** - Wrap SDK calls in try/catch
+4. **Validate user input** - Don't trust frontend data
+5. **Use hardware wallets** - For production, integrate with Ledger/Trezor
+6. **Monitor positions** - Set up alerts for health factor changes
 
 ## Smart Contract
 

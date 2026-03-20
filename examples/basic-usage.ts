@@ -13,7 +13,7 @@ import {
   InvalidAddressError,
   NetworkError,
   BitflowSDKError,
-} from 'bitflow-lend-sdk';
+} from '@yusufolosun/bitflow-lend-sdk';
 
 async function main() {
   // Initialize client for mainnet

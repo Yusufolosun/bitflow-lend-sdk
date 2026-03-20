@@ -13,7 +13,7 @@ import {
   blocksToTime,
   formatBlocksToTime,
   PROTOCOL_CONSTANTS,
-} from 'bitflow-lend-sdk';
+} from '@yusufolosun/bitflow-lend-sdk';
 
 function main() {
   console.log('BitFlow Lend SDK - Calculations Example\n');

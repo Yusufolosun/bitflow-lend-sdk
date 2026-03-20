@@ -1,6 +1,6 @@
 # @yusufolosun/bitflow-lend-sdk
 
-[![npm version](https://badge.fury.io/js/bitflow-lend-sdk.svg)](https://www.npmjs.com/package/bitflow-lend-sdk)
+[![npm version](https://badge.fury.io/js/@yusufolosun%2Fbitflow-lend-sdk.svg)](https://www.npmjs.com/package/@yusufolosun/bitflow-lend-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
@@ -18,21 +18,21 @@ Professional TypeScript SDK for [BitFlow Lend](https://github.com/Yusufolosun/bi
 ## Installation
 
 ```bash
-npm install bitflow-lend-sdk @stacks/transactions @stacks/network
+npm install @yusufolosun/bitflow-lend-sdk @stacks/transactions @stacks/network
 ```
 
 ```bash
-yarn add bitflow-lend-sdk @stacks/transactions @stacks/network
+yarn add @yusufolosun/bitflow-lend-sdk @stacks/transactions @stacks/network
 ```
 
 ```bash
-pnpm add bitflow-lend-sdk @stacks/transactions @stacks/network
+pnpm add @yusufolosun/bitflow-lend-sdk @stacks/transactions @stacks/network
 ```
 
 ## Quick Start
 
 ```typescript
-import { VaultClient, toMicroStx, formatStx } from 'bitflow-lend-sdk';
+import { VaultClient, toMicroStx, formatStx } from '@yusufolosun/bitflow-lend-sdk';
 
 // Initialize client
 const client = new VaultClient({ network: 'mainnet' });
@@ -138,7 +138,7 @@ await client.liquidate(
 ### Check User Position
 
 ```typescript
-import { VaultClient, formatStx, formatHealthFactor } from 'bitflow-lend-sdk';
+import { VaultClient, formatStx, formatHealthFactor } from '@yusufolosun/bitflow-lend-sdk';
 
 const client = new VaultClient({ network: 'mainnet' });
 const userAddress = 'SP1M46W6CVGAMH3ZJD3TKMY5KCY48HWAZK0DYG193';
@@ -164,7 +164,7 @@ if (loan) {
 ### Deposit and Borrow
 
 ```typescript
-import { VaultClient, toMicroStx } from 'bitflow-lend-sdk';
+import { VaultClient, toMicroStx } from '@yusufolosun/bitflow-lend-sdk';
 
 const client = new VaultClient({ network: 'testnet' });
 const privateKey = process.env.PRIVATE_KEY!;
@@ -192,7 +192,7 @@ console.log(`Borrow tx: ${borrowTx}`);
 ### Monitor Protocol
 
 ```typescript
-import { VaultClient, formatStx } from 'bitflow-lend-sdk';
+import { VaultClient, formatStx } from '@yusufolosun/bitflow-lend-sdk';
 
 const client = new VaultClient({ network: 'mainnet' });
 
@@ -215,13 +215,13 @@ console.log(`Avg Interest: ${metrics.averageInterestRate / 100n}%`);
 ### Calculate Loan Requirements
 
 ```typescript
-import { 
+import {
   calculateRequiredCollateral,
   calculateMaxBorrow,
   calculateInterest,
   toMicroStx,
   formatStx
-} from 'bitflow-lend-sdk';
+} from '@yusufolosun/bitflow-lend-sdk';
 
 // How much collateral for 1000 STX loan?
 const collateral = calculateRequiredCollateral(toMicroStx(1000));
@@ -252,7 +252,7 @@ import type {
   RepaymentAmount,
   NetworkType,
   SDKConfig,
-} from 'bitflow-lend-sdk';
+} from '@yusufolosun/bitflow-lend-sdk';
 
 // All return types are properly typed
 const loan: UserLoan = await client.getUserLoan(address);
@@ -280,7 +280,7 @@ const client = new VaultClient({ network: 'testnet' });
 Access protocol constants:
 
 ```typescript
-import { PROTOCOL_CONSTANTS } from 'bitflow-lend-sdk';
+import { PROTOCOL_CONSTANTS } from '@yusufolosun/bitflow-lend-sdk';
 
 console.log(PROTOCOL_CONSTANTS.COLLATERAL_RATIO);      // 15000n (150%)
 console.log(PROTOCOL_CONSTANTS.LIQUIDATION_THRESHOLD); // 11000n (110%)
@@ -299,7 +299,7 @@ import {
   isValidStxAddress,
   blocksToTime,
   formatBlocksToTime,
-} from 'bitflow-lend-sdk';
+} from '@yusufolosun/bitflow-lend-sdk';
 
 // Formatting
 formatStx(1500000000n);          // "1,500.00"
@@ -332,7 +332,7 @@ import {
   LoanActiveError,
   NoLoanError,
   BitflowSDKError,
-} from 'bitflow-lend-sdk';
+} from '@yusufolosun/bitflow-lend-sdk';
 
 try {
   const txId = await client.deposit(amount, privateKey);

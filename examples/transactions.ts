@@ -24,7 +24,7 @@ import {
   NetworkError,
   BitflowSDKError,
   PROTOCOL_CONSTANTS,
-} from 'bitflow-lend-sdk';
+} from '@yusufolosun/bitflow-lend-sdk';
 
 async function main() {
   // SECURITY: Get private key from environment variable

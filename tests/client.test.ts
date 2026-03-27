@@ -3,6 +3,7 @@ import {
   VaultClient,
   CONTRACT_ADDRESSES,
   getContractAddress,
+  parseContractAddress,
   InvalidAddressError,
 } from '../src';
 
@@ -51,5 +52,19 @@ describe('Contract Addresses', () => {
 
     expect(mainnetVault).toContain('SP1N3809W9CBWWX04KN3TCQHP8A9GN520BD4JMP8Z');
     expect(testnetVault).toContain('ST1N3809W9CBWWX04KN3TCQHP8A9GN520BDRPWBVD');
+  });
+
+  it('should parse valid contract identifiers', () => {
+    const parsed = parseContractAddress(
+      'SP1N3809W9CBWWX04KN3TCQHP8A9GN520BD4JMP8Z.bitflow-vault-core-v2'
+    );
+
+    expect(parsed.address).toBe('SP1N3809W9CBWWX04KN3TCQHP8A9GN520BD4JMP8Z');
+    expect(parsed.name).toBe('bitflow-vault-core-v2');
+  });
+
+  it('should throw on invalid contract identifiers', () => {
+    expect(() => parseContractAddress('missing-separator')).toThrow('Invalid contract identifier format');
+    expect(() => parseContractAddress('')).toThrow('non-empty string');
   });
 });

@@ -71,7 +71,15 @@ export function parseContractAddress(fullAddress: string): {
   address: string;
   name: string;
 } {
+  if (!fullAddress || typeof fullAddress !== 'string') {
+    throw new Error('Contract identifier must be a non-empty string');
+  }
+
   const [address, name] = fullAddress.split('.');
+  if (!address || !name) {
+    throw new Error(`Invalid contract identifier format: ${fullAddress}`);
+  }
+
   return { address, name };
 }
 

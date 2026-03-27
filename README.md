@@ -377,6 +377,7 @@ const privateKey = 'abc123...'; // DANGEROUS!
 // Add to .gitignore: .env, *.env.*, .env.local
 
 // DO: Use environment variables
+// Start from .env.example and provide a testnet key locally
 const privateKey = process.env.PRIVATE_KEY;
 if (!privateKey) {
   throw new Error('PRIVATE_KEY environment variable required');
@@ -426,8 +427,11 @@ Ensure your `.gitignore` includes:
 .env.local
 wallet.json
 **/secrets/
+**/.secrets/
 *.key
 *.pem
+*.p12
+*.keystore
 mnemonic.txt
 ```
 

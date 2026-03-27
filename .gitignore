@@ -21,6 +21,13 @@ wallet.json
 *.wallet
 *.seed
 *.mnemonic
+mnemonic.txt
+*.pem
+*.key
+*.p12
+*.keystore
+**/secrets/
+**/.secrets/
 .npmrc
 .yarnrc.yml
 

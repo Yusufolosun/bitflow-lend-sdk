@@ -1,15 +1,58 @@
 import { ERROR_CODES } from '../constants';
 import * as Errors from '../errors';
 
+function toErrorRecord(value: unknown): Record<string, unknown> | null {
+  if (typeof value !== 'object' || value === null) {
+    return null;
+  }
+  return value as Record<string, unknown>;
+}
+
+function toBigInt(value: unknown): bigint | null {
+  try {
+    if (typeof value === 'bigint') {
+      return value;
+    }
+
+    if (typeof value === 'number' && Number.isInteger(value)) {
+      return BigInt(value);
+    }
+
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (/^-?\d+$/.test(trimmed)) {
+        return BigInt(trimmed);
+      }
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function extractErrorMessage(error: unknown): string | null {
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  const errorRecord = toErrorRecord(error);
+  if (errorRecord && typeof errorRecord.message === 'string') {
+    return errorRecord.message;
+  }
+
+  return null;
+}
+
 /**
  * Parse contract error and return appropriate error instance
  */
-export function parseContractError(error: any, txId?: string): Error {
+export function parseContractError(error: unknown, txId?: string): Error {
   const errorCode = extractErrorCode(error);
 
   if (!errorCode) {
     return new Errors.TransactionFailedError(
-      error?.message || 'Transaction failed',
+      extractErrorMessage(error) || 'Transaction failed',
       undefined,
       txId
     );
@@ -59,24 +102,32 @@ export function parseContractError(error: any, txId?: string): Error {
 /**
  * Extract error code from various error response formats
  */
-function extractErrorCode(error: any): bigint | null {
+function extractErrorCode(error: unknown): bigint | null {
   try {
+    const errorRecord = toErrorRecord(error);
+
     // Check for error code in different possible locations
-    if (error?.value !== undefined) {
-      return BigInt(error.value);
-    }
+    if (errorRecord) {
+      const valueCode = toBigInt(errorRecord.value);
+      if (valueCode !== null) {
+        return valueCode;
+      }
 
-    if (error?.error_code !== undefined) {
-      return BigInt(error.error_code);
-    }
+      const errorCode = toBigInt(errorRecord.error_code);
+      if (errorCode !== null) {
+        return errorCode;
+      }
 
-    if (error?.code !== undefined) {
-      return BigInt(error.code);
+      const code = toBigInt(errorRecord.code);
+      if (code !== null) {
+        return code;
+      }
     }
 
     // Try to parse from error message
-    if (typeof error?.message === 'string') {
-      const match = error.message.match(/error\s+code\s+(\d+)/i);
+    const message = extractErrorMessage(error);
+    if (message) {
+      const match = message.match(/error\s+code\s+(\d+)/i);
       if (match) {
         return BigInt(match[1]);
       }
@@ -91,7 +142,7 @@ function extractErrorCode(error: any): bigint | null {
 /**
  * Check if error is a contract error
  */
-export function isContractError(error: any): boolean {
+export function isContractError(error: unknown): boolean {
   return extractErrorCode(error) !== null;
 }
 

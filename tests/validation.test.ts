@@ -197,6 +197,10 @@ describe('Validation Utilities', () => {
       expect(() => validateTransactionOptions({})).not.toThrow();
     });
 
+    it('should pass for undefined options', () => {
+      expect(() => validateTransactionOptions(undefined)).not.toThrow();
+    });
+
     it('should pass for valid fee', () => {
       expect(() => validateTransactionOptions({ fee: 1000n })).not.toThrow();
     });
@@ -222,6 +226,16 @@ describe('Validation Utilities', () => {
 
     it('should throw for non-bigint nonce', () => {
       expect(() => validateTransactionOptions({ nonce: 5 as unknown as bigint })).toThrow(InvalidParameterError);
+    });
+
+    it('should throw for null options', () => {
+      expect(() => validateTransactionOptions(null)).toThrow(InvalidParameterError);
+      expect(() => validateTransactionOptions(null)).toThrow('must be an object');
+    });
+
+    it('should throw for array options', () => {
+      expect(() => validateTransactionOptions([])).toThrow(InvalidParameterError);
+      expect(() => validateTransactionOptions([])).toThrow('must be an object');
     });
   });
 });

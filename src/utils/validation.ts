@@ -138,21 +138,34 @@ export function validatePrivateKey(key: string): void {
 /**
  * Validate transaction options
  */
-export function validateTransactionOptions(options: any): void {
-  if (options.fee !== undefined) {
-    if (typeof options.fee !== 'bigint') {
+export function validateTransactionOptions(options: unknown): void {
+  if (options === undefined) {
+    return;
+  }
+
+  if (typeof options !== 'object' || options === null || Array.isArray(options)) {
+    throw new InvalidParameterError('Transaction options must be an object');
+  }
+
+  const txOptions = options as {
+    fee?: unknown;
+    nonce?: unknown;
+  };
+
+  if (txOptions.fee !== undefined) {
+    if (typeof txOptions.fee !== 'bigint') {
       throw new InvalidParameterError('Transaction fee must be a bigint');
     }
-    if (options.fee < 0n) {
+    if (txOptions.fee < 0n) {
       throw new InvalidParameterError('Transaction fee cannot be negative');
     }
   }
 
-  if (options.nonce !== undefined) {
-    if (typeof options.nonce !== 'bigint') {
+  if (txOptions.nonce !== undefined) {
+    if (typeof txOptions.nonce !== 'bigint') {
       throw new InvalidParameterError('Nonce must be a bigint');
     }
-    if (options.nonce < 0n) {
+    if (txOptions.nonce < 0n) {
       throw new InvalidParameterError('Nonce cannot be negative');
     }
   }

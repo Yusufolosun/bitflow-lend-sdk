@@ -466,8 +466,8 @@ export class VaultClient {
         network: this.network,
         anchorMode: AnchorMode.Any,
         postConditionMode: PostConditionMode.Allow,
-        fee: options.fee || PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
-        ...(options.nonce && { nonce: options.nonce }),
+        fee: options.fee ?? PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
+        ...(options.nonce !== undefined && { nonce: options.nonce }),
         ...(options.postConditions && { postConditions: options.postConditions }),
       };
 
@@ -519,8 +519,8 @@ export class VaultClient {
         network: this.network,
         anchorMode: AnchorMode.Any,
         postConditionMode: PostConditionMode.Allow,
-        fee: options.fee || PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
-        ...(options.nonce && { nonce: options.nonce }),
+        fee: options.fee ?? PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
+        ...(options.nonce !== undefined && { nonce: options.nonce }),
         ...(options.postConditions && { postConditions: options.postConditions }),
       };
 
@@ -587,8 +587,8 @@ export class VaultClient {
         network: this.network,
         anchorMode: AnchorMode.Any,
         postConditionMode: PostConditionMode.Allow,
-        fee: options.fee || PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
-        ...(options.nonce && { nonce: options.nonce }),
+        fee: options.fee ?? PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
+        ...(options.nonce !== undefined && { nonce: options.nonce }),
         ...(options.postConditions && { postConditions: options.postConditions }),
       };
 
@@ -637,9 +637,9 @@ export class VaultClient {
         network: this.network,
         anchorMode: AnchorMode.Any,
         postConditionMode: PostConditionMode.Allow,
-        fee: options.fee || PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
+        fee: options.fee ?? PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
         postConditions: options.postConditions || [],
-        ...(options.nonce && { nonce: options.nonce }),
+        ...(options.nonce !== undefined && { nonce: options.nonce }),
       };
 
       const transaction = await makeContractCall(txOptions);
@@ -690,9 +690,9 @@ export class VaultClient {
         network: this.network,
         anchorMode: AnchorMode.Any,
         postConditionMode: PostConditionMode.Allow,
-        fee: options.fee || PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
+        fee: options.fee ?? PROTOCOL_CONSTANTS.DEFAULT_TX_FEE,
         postConditions: options.postConditions || [],
-        ...(options.nonce && { nonce: options.nonce }),
+        ...(options.nonce !== undefined && { nonce: options.nonce }),
       };
 
       const transaction = await makeContractCall(txOptions);

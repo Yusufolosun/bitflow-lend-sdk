@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { VaultClient, CONTRACT_ADDRESSES, getContractAddress } from '../src';
+import {
+  VaultClient,
+  CONTRACT_ADDRESSES,
+  getContractAddress,
+  InvalidAddressError,
+} from '../src';
 
 describe('VaultClient', () => {
   describe('initialization', () => {
@@ -16,6 +21,14 @@ describe('VaultClient', () => {
       expect(client.getNetwork()).toBe('testnet');
       expect(client.getContractAddress()).toBe(
         'ST1N3809W9CBWWX04KN3TCQHP8A9GN520BDRPWBVD.bitflow-vault-core-v2'
+      );
+    });
+
+    it('should reject invalid address in getRepaymentAmount', async () => {
+      const client = new VaultClient({ network: 'mainnet' });
+
+      await expect(client.getRepaymentAmount('invalid-address')).rejects.toBeInstanceOf(
+        InvalidAddressError
       );
     });
   });

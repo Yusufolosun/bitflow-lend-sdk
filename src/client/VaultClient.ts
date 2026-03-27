@@ -32,7 +32,6 @@ import {
   getNetworkUrl,
 } from '../constants';
 import { safeCvToValue } from '../utils/clarity';
-import { isValidStxAddress } from '../utils/address';
 import {
   validateAddress,
   validatePrivateKey,
@@ -359,31 +358,35 @@ export class VaultClient {
    * 
    * @param userAddress - Stacks address to check
    * @returns Repayment breakdown
+   * @throws {InvalidAddressError} If address format is invalid
+   * @throws {NetworkError} If network request fails
    */
   async getRepaymentAmount(userAddress: string): Promise<RepaymentAmount> {
-    if (!isValidStxAddress(userAddress)) {
-      throw new Error('Invalid Stacks address');
+    validateAddress(userAddress, 'User address');
+
+    try {
+      const result = await fetchCallReadOnlyFunction({
+        contractAddress: this.contractAddress,
+        contractName: this.contractName,
+        functionName: 'get-repayment-amount',
+        functionArgs: [principalCV(userAddress)],
+        network: this.network,
+        senderAddress: userAddress,
+      });
+
+      const value = safeCvToValue<ClarityRepaymentAmountResponse>(result);
+
+      const principal = BigInt(value?.principal || 0);
+      const interest = BigInt(value?.interest || 0);
+
+      return {
+        principal,
+        interest,
+        total: principal + interest,
+      };
+    } catch (error) {
+      throw new NetworkError(`Failed to fetch repayment amount: ${(error as Error).message}`);
     }
-
-    const result = await fetchCallReadOnlyFunction({
-      contractAddress: this.contractAddress,
-      contractName: this.contractName,
-      functionName: 'get-repayment-amount',
-      functionArgs: [principalCV(userAddress)],
-      network: this.network,
-      senderAddress: userAddress,
-    });
-
-    const value = safeCvToValue<ClarityRepaymentAmountResponse>(result);
-
-    const principal = BigInt(value?.principal || 0);
-    const interest = BigInt(value?.interest || 0);
-
-    return {
-      principal,
-      interest,
-      total: principal + interest,
-    };
   }
 
   /**
